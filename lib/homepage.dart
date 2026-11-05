@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+// TÄMÄ ON PÄÄSIVU, JOSSA ON TAPAHTUMAT JA KALENTERIN AVAUSNAPPI
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 
 class _MyAppState extends State<MyApp> {
   bool isDarkMode = false;
