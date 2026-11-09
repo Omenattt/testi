@@ -9,9 +9,10 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-
 class _MyAppState extends State<MyApp> {
   bool isDarkMode = false;
+
+// Dark/light mode -tilan vaihtaminen
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +119,7 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            // Ensimmäinen tapahtuma
+            // Kortit, päivän tapahtumat
             Card(
               child: ListTile(
                 leading: const Icon(
@@ -130,7 +131,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            // Toinen tapahtuma
             Card(
               child: ListTile(
                 leading: const Icon(
@@ -168,6 +168,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
+// TÄMÄ ON KALENTERISIVU, JOSSA NÄYTETÄÄN KALENTERI
+
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
 
@@ -179,7 +181,7 @@ class CalendarPage extends StatelessWidget {
     final year = now.year;
     final month = now.month;
 
-    // Kuukauden nimi
+    // Kuukaudet
     const monthNames = [
       'Tammikuu',
       'Helmikuu',
@@ -201,8 +203,6 @@ class CalendarPage extends StatelessWidget {
     // Kuukauden ensimmäinen päivä
     final firstDay = DateTime(year, month, 1);
 
-    // DateTime: maanantai = 1, sunnuntai = 7
-    // Muutetaan tämä GridView'ta varten nollapohjaiseksi.
     final firstWeekday = firstDay.weekday - 1;
 
     return Scaffold(
