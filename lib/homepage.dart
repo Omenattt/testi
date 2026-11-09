@@ -170,18 +170,26 @@ class HomePage extends StatelessWidget {
 
 // TÄMÄ ON KALENTERISIVU, JOSSA NÄYTETÄÄN KALENTERI
 
-class CalendarPage extends StatelessWidget {
+class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
 
   @override
+  State<CalendarPage> createState() => _CalendarPageState();
+}
+
+class _CalendarPageState extends State<CalendarPage> {
+
+  // Tallennetaan näytettävä kuukausi
+  DateTime selectedMonth = DateTime.now();
+
+  @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
 
     // Nykyinen vuosi ja kuukausi
-    final year = now.year;
-    final month = now.month;
+    final year = selectedMonth.year;
+    final month = selectedMonth.month;
 
-    // Kuukaudet
+    // Kuukausien nimet
     const monthNames = [
       'Tammikuu',
       'Helmikuu',
@@ -197,13 +205,17 @@ class CalendarPage extends StatelessWidget {
       'Joulukuu',
     ];
 
-    // Kuinka monta päivää tässä kuukaudessa on?
+    // Kuukauden päivien määrä
     final daysInMonth = DateTime(year, month + 1, 0).day;
 
     // Kuukauden ensimmäinen päivä
     final firstDay = DateTime(year, month, 1);
 
+    // Maanantai = 0, sunnuntai = 6
     final firstWeekday = firstDay.weekday - 1;
+
+    // Tämän päivän päivämäärä
+    final today = DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -212,15 +224,50 @@ class CalendarPage extends StatelessWidget {
 
       body: Padding(
         padding: const EdgeInsets.all(16),
+
         child: Column(
           children: [
-            // Kuukausi ja vuosi
-            Text(
-              '${monthNames[month - 1]} $year',
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+
+            // Kuukauden vaihtaminen nuolilla
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+                // Edellinen kuukausi
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedMonth = DateTime(
+                        year,
+                        month - 1,
+                      );
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                ),
+
+                // Kuukausi ja vuosi
+                Text(
+                  '${monthNames[month - 1]} $year',
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                // Seuraava kuukausi
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedMonth = DateTime(
+                        year,
+                        month + 1,
+                      );
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_forward),
+                ),
+              ],
             ),
 
             const SizedBox(height: 20),
@@ -243,25 +290,30 @@ class CalendarPage extends StatelessWidget {
             // Kalenterin päivät
             Expanded(
               child: GridView.builder(
+
                 itemCount: firstWeekday + daysInMonth,
+
                 gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 7,
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
                 ),
+
                 itemBuilder: (context, index) {
-                  // Tyhjät ruudut ennen kuukauden ensimmäistä päivää
+
+                  // Tyhjät ruudut kuukauden alussa
                   if (index < firstWeekday) {
                     return const SizedBox();
                   }
 
                   final day = index - firstWeekday + 1;
 
+                  // Tarkistetaan, onko päivä tänään
                   final isToday =
-                      day == now.day &&
-                      month == now.month &&
-                      year == now.year;
+                      day == today.day &&
+                      month == today.month &&
+                      year == today.year;
 
                   return Container(
                     decoration: BoxDecoration(
@@ -270,18 +322,25 @@ class CalendarPage extends StatelessWidget {
                           : Theme.of(context)
                               .colorScheme
                               .surfaceContainerHighest,
+
                       borderRadius: BorderRadius.circular(12),
                     ),
+
                     child: Center(
                       child: Text(
                         '$day',
+
                         style: TextStyle(
                           fontSize: 18,
+
                           fontWeight: isToday
                               ? FontWeight.bold
                               : FontWeight.normal,
+
                           color: isToday
-                              ? Theme.of(context).colorScheme.onPrimary
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
                               : null,
                         ),
                       ),
